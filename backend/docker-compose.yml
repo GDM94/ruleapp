@@ -1,0 +1,86 @@
+version: "3.8"
+
+services:
+  backend_asset:
+    container_name: backend_asset
+    image: dimax94/microservice_backend_asset
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "5000:5000"
+    depends_on:
+      - redis
+    networks:
+      - backend
+
+  device_entrypoint:
+    container_name: device_entrypoint
+    image: dimax94/microservice_device_entrypoint
+    depends_on:
+      - redis
+      - backend_asset
+    networks:
+      - backend
+
+  mqtt_publisher:
+    container_name: mqtt_publisher
+    image: dimax94/microservice_mqtt_publisher
+    ports:
+      - "5100:5100"
+    networks:
+      - backend
+
+  timer_evaluation:
+    container_name: timer_evaluation
+    image: dimax94/microservice_timer_evaluation
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      - redis
+    networks:
+      - backend
+
+  redis:
+    container_name: redis
+    image: dimax94/redis
+    ports:
+      - "6379:6379"
+    networks:
+      - backend
+
+  frontend:
+    container_name: frontend
+    image: dimax94/frontend
+    volumes:
+      - "./certs:/etc/nginx/certs"
+    ports:
+      - "84:84"
+      - "443:443"
+    networks:
+      - frontend
+
+  reverse_proxy:
+    container_name: reverse_proxy
+    image: dimax94/reverse_proxy
+    depends_on:
+      - backend_asset
+    ports:
+      - "8081:8081"
+    networks:
+      - backend
+
+
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+
+
+
+
+
+

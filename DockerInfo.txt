@@ -1,0 +1,52 @@
+# Docker login:
+------------------
+	user: dimax94
+	psw: giomartagio1
+
+=================================================
+# Docker build multi-arch
+---------------------------
+	docker buildx build --platform linux/amd64,linux/arm/v7 -t dimax94/rabbitmq --push .
+
+=================================================================================
+# Dockerfile run with network command
+----------------------------------------
+	docker build -t redis_prova
+	docker run --network=bridge --name=redis -p 6379:6379 redis_prova
+	
+==============================================================================
+
+mosquitto:
+    container_name: mosquitto
+    image: mbixtech/arm32v7-mosquitto:latest
+    ports:
+      - 1883:1883
+    expose:
+      - 1883
+    environment:
+      TZ: Europe/Rome
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+
+
+redis:
+    container_name: redis
+    image: arm32v7/redis:latest
+
+emqx:
+    container_name: emqx
+    image: emqx/emqx:4.2.8
+    ports:
+      - 1883:1883
+      - 18083:18083
+      - 8081:8081
+      - 8083:8083
+      - 8084:8084
+      - 8883:8883
+    expose:
+      - 1883
+      - 18083
+      - 8081
+      - 8083
+      - 8084
+      - 8883

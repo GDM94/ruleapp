@@ -1,0 +1,20 @@
+# KAFKA INFO
+cd /home/pi/Documents/kafka/kafka_2.12-2.3.0
+
+# Start Zookeeper
+bin/zookeeper-server-start.sh config/zookeeper.properties
+
+# Start Server 1
+bin/kafka-server-start.sh config/server.properties
+
+# Start Server 2
+bin/kafka-server-start.sh config/server-2.properties
+
+# Create a new replicated topic 
+bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 2 --partitions 1 --topic demo-topic
+
+# Produce some messages
+bin/kafka-console-producer.sh --broker-list localhost:9092 --topic demo-topic
+
+# Consume messages 
+bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --from-beginning --topic demo-topic
