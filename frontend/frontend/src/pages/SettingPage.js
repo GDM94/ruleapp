@@ -12,6 +12,7 @@ var jwt = require('jwt-simple');
 class SettingPage extends React.Component {
     constructor(props) {
         super(props);
+        console.log(this.props.location)
         const decoded = jwt.decode(this.props.location.state.token, process.env.REACT_APP_JWT_SECRET);
         const idToken = jwt.encode({ "user_id": decoded.user_id }, process.env.REACT_APP_JWT_SECRET);
         axios.defaults.headers.common['token'] = idToken;

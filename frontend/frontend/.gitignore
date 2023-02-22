@@ -22,6 +22,4 @@ yarn-debug.log*
 yarn-error.log*
 
 .dockerignore
-/nginx
-Dockerfile
-env
+/build
