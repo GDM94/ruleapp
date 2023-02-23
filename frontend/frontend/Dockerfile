@@ -1,32 +1,29 @@
 # Base image
-FROM node:14 as build
+FROM node:13.12.0-alpine as build
 
 # Set working directory
-WORKDIR /
+WORKDIR /app
 
 # Copy package.json and package-lock.json to the working directory
-COPY package*.json ./
+COPY . .
 
 # Install dependencies
 RUN npm install
-
-# Copy the entire app directory to the working directory
-COPY . .
 
 # Build the app
 RUN npm run build
 
 # Set the base image
-FROM nginx:1.21.1-alpine
+FROM nginx:stable-alpine
 
 # Copy the build files to the nginx web server directory
-COPY --from=build /build /usr/share/nginx/html
+COPY --from=build /app/build /usr/share/nginx/html
 
 # Copy the nginx config file to the nginx directory
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expose port 80
-EXPOSE 80
+# Expose port 84
+EXPOSE 84
 
 # Start nginx
 CMD ["nginx", "-g", "daemon off;"]
